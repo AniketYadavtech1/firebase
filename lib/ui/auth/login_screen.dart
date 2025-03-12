@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_complete/ui/auth/login_with_phone.dart';
 import 'package:firebase_complete/ui/auth/signup_screen.dart';
 import 'package:firebase_complete/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../../posts/post_screen.dart';
 import '../../widgets/roundbutton.dart';
 
@@ -21,11 +22,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
   final _auth = FirebaseAuth.instance;
 
-
   void login() {
     setState(() {
       loading = true;
-
     });
     _auth
         .signInWithEmailAndPassword(
@@ -36,8 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => PostScreen()));
       setState(() {
-        loading= false;
-
+        loading = false;
       });
     }).onError((error, stackTrace) {
       debugPrint(error.toString());
@@ -60,6 +58,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Icon(
+          Icons.arrow_back_ios,
+          size: 15,
+        ),
+        centerTitle: true,
         automaticallyImplyLeading: false,
         title: Text('Login Page'),
       ),
@@ -97,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextFormField(
                       keyboardType: TextInputType.text,
-                      obscureText: true,
+                      // obscureText: true,
                       controller: passwordController,
                       decoration: InputDecoration(
                         hintText: 'Password',
@@ -142,6 +145,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Text("SinUp"),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LoginWithPhone()));
+                },
+                child: Container(
+                  height: 50,
+                  width: MediaQuery.sizeOf(context).width,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    border: Border.all(
+                      color: Colors.black,
+                    ),
+                  ),
+                  child: Center(child: Text('Login with Phone Number')),
+                ),
               )
             ],
           ),

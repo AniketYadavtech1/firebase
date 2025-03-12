@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_complete/posts/post_screen.dart';
 import 'package:firebase_complete/utils/utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../../widgets/roundbutton.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'login_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -29,7 +29,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void SignUp() {
-
     setState(() {
       loading = true;
     });
@@ -47,12 +46,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
         loading = false;
       });
     });
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Icon(
+          Icons.arrow_back_ios,
+          size: 15,
+        ),
         title: Text('SignUp'),
       ),
       body: Padding(
@@ -84,7 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   TextFormField(
                     keyboardType: TextInputType.text,
-                    obscureText: true,
+                    // obscureText: true,
                     controller: passwordController,
                     decoration: InputDecoration(
                       hintText: 'Password',
@@ -104,11 +107,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
               height: 20,
             ),
             Roundbutton(
-              title: 'Login',
+              title: 'SignUp',
               loading: loading,
               onTap: () {
                 if (_formKey.currentState!.validate()) {
                   SignUp();
+
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => PostScreen()));
+
                   // setState(() {
                   //   loading = true;
                   // });
