@@ -15,14 +15,13 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    notificationService.firebaseInit();
+    notificationService.firebaseInit(context);
     notificationService.requestNotificationPermission();
     notificationService.isTokenRefresh();
     notificationService.getDeviceToken().then((value) {
       print("device token");
       print("Hi Aniket your data is print please do here");
       print(value);
-      notificationService.FeatchData();
     });
   }
 

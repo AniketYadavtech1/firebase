@@ -1,14 +1,19 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import 'message_screen.dart';
 
 class NotificationService {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
   void requestNotificationPermission() async {
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
@@ -29,8 +34,7 @@ class NotificationService {
     }
   }
 
-  void initLocalNotification(
-      BuildContext, context, RemoteMessage message) async {
+  void initLocalNotification(context, RemoteMessage message) async {
     var androidInitializationSettings =
         AndroidInitializationSettings('@mipmap/ic_launcher');
     var iosInitializationSettings = DarwinInitializationSettings();
@@ -40,16 +44,29 @@ class NotificationService {
     );
     await _flutterLocalNotificationsPlugin.initialize(
       initializationSetting,
-      onDidReceiveNotificationResponse: (payload) {},
+      onDidReceiveNotificationResponse: (payload) {
+        handleMessage(BuildContext, context, message, payload);
+      },
     );
   }
 
-  void firebaseInit() {
+  void firebaseInit(BuildContext context) {
     FirebaseMessaging.onMessage.listen((message) {
       if (kDebugMode) {
         print(message.notification!.title.toString());
         print(message.notification!.body.toString());
+        print(message.data.toString());
+        print(message.data['type']);
+        print(message.data['id']);
       }
+
+      if (Platform.isAndroid) {
+        initLocalNotification(context, message);
+        showNotification(message);
+      } else {
+        showNotification(message);
+      }
+      initLocalNotification(context, message);
       showNotification(message);
     });
   }
@@ -105,14 +122,71 @@ class NotificationService {
     });
   }
 
-  // -----
+  Future<void> setupInteractMessage(BuildContext, context) async {
+    /// when app is terminated
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
+    if (initialMessage != null) {
+      handleMessage(context, initialMessage);
+    }
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      handleMessage(
+        context,
+        event,
+      );
+    });
+  }
 
-  Future<void> FeatchData() async {
-    print("Jais shree ram how to do complete");
-    for (int i = 0; i <= 100; i++) {
-      if (i / 2 == 0) {
-        print(i);
-      }
+  //when app is background
+
+  void
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  handleMessage(BuildContext context, RemoteMessage message) {
+
+    if(message.data['type'] =='msj'){
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => MessageScreen(
+            id: message.data['id'] ,
+          ),),);
     }
   }
-}
+
