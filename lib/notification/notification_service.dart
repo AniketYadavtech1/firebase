@@ -45,7 +45,7 @@ class NotificationService {
     await _flutterLocalNotificationsPlugin.initialize(
       initializationSetting,
       onDidReceiveNotificationResponse: (payload) {
-        handleMessage(BuildContext, context, message, payload);
+        handleMessage(context, message);
       },
     );
   }
@@ -59,7 +59,6 @@ class NotificationService {
         print(message.data['type']);
         print(message.data['id']);
       }
-
       if (Platform.isAndroid) {
         initLocalNotification(context, message);
         showNotification(message);
@@ -123,7 +122,6 @@ class NotificationService {
   }
 
   Future<void> setupInteractMessage(BuildContext, context) async {
-    /// when app is terminated
     RemoteMessage? initialMessage =
         await FirebaseMessaging.instance.getInitialMessage();
     if (initialMessage != null) {
@@ -137,56 +135,16 @@ class NotificationService {
     });
   }
 
-  //when app is background
-
-  void
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  handleMessage(BuildContext context, RemoteMessage message) {
-
-    if(message.data['type'] =='msj'){
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => MessageScreen(
-            id: message.data['id'] ,
-          ),),);
+  void handleMessage(context, message) {
+    if (message.data['type'] == 'msj') {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MessageScreen(
+            id: message.data['id'],
+          ),
+        ),
+      );
     }
   }
-
+}
