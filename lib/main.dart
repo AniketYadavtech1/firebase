@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_complete/chat/ui/home.dart';
+import 'package:firebase_complete/view/crud/binding/crud_binding.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+import 'chat/component/login_screen.dart';
 import 'firebase_options.dart';
-import 'notification/home_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,12 +29,24 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      home: HomeScreen(),
-      // home: SplashScreen(),
-      // home: Barcode_Scanner(),
+      initialBinding: CrudBinding(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+          if (snapshot.hasData) {
+            return HomeScreenView();
+          }
+          return LoginView();
+        },
+      ),
     );
   }
 }

@@ -1,56 +1,28 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_complete/chat/component/signup_screen.dart';
+import 'package:firebase_complete/chat/ui/home.dart';
 import 'package:firebase_complete/ui/auth/login_with_phone.dart';
-import 'package:firebase_complete/ui/auth/signup_screen.dart';
-import 'package:firebase_complete/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
-import '../../posts/post_screen.dart';
 import '../../widgets/roundbutton.dart';
+import '../controller/auth_controller.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginView extends StatefulWidget {
+  const LoginView({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  bool loading = false;
+class _LoginViewState extends State<LoginView> {
+  final con = Get.put<AuthController>(AuthController());
   final _formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final _auth = FirebaseAuth.instance;
-
-  void login() {
-    setState(() {
-      loading = true;
-    });
-    _auth
-        .signInWithEmailAndPassword(
-            email: emailController.text,
-            password: passwordController.text.toString())
-        .then((value) {
-      Utils().tostMessage(value.user!.email.toString());
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => PostScreen()));
-      setState(() {
-        loading = false;
-      });
-    }).onError((error, stackTrace) {
-      debugPrint(error.toString());
-      Utils().tostMessage(error.toString());
-
-      setState(() {
-        loading = false;
-      });
-    });
-  }
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
+    con.emailController.dispose();
+    con.passwordController.dispose();
     super.dispose();
   }
 
@@ -83,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     TextFormField(
                       keyboardType: TextInputType.emailAddress,
-                      controller: emailController,
+                      controller: con.emailController,
                       decoration: InputDecoration(
                         hintText: 'Email',
                         prefix: Icon(Icons.alternate_email),
@@ -101,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextFormField(
                       keyboardType: TextInputType.text,
                       // obscureText: true,
-                      controller: passwordController,
+                      controller: con.passwordController,
                       decoration: InputDecoration(
                         hintText: 'Password',
                         prefix: Icon(Icons.alternate_email),
@@ -121,9 +93,13 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               Roundbutton(
                 title: 'Login',
-                onTap: () {
+                loading: con.loading.value,
+                onTap: () async {
                   if (_formKey.currentState!.validate()) {
-                    login();
+                    bool isSuccess = await con.login();
+                    if (isSuccess) {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreenView()));
+                    }
                   }
                 },
               ),
@@ -138,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SignUpScreen(),
+                          builder: (context) => SignupView(),
                         ),
                       );
                     },
@@ -151,10 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => LoginWithPhone()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginWithPhone()));
                 },
                 child: Container(
                   height: 50,

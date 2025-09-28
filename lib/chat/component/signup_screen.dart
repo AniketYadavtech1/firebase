@@ -1,51 +1,29 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_complete/posts/post_screen.dart';
-import 'package:firebase_complete/utils/utils.dart';
+import 'package:firebase_complete/chat/ui/home.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../widgets/roundbutton.dart';
+import '../controller/auth_controller.dart';
 import 'login_screen.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class SignupView extends StatefulWidget {
+  const SignupView({super.key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignupView> createState() => _SignupViewState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignupViewState extends State<SignupView> {
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
 
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  final con = Get.put<AuthController>(AuthController());
 
   @override
   void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
+    con.emailController.dispose();
+    con.passwordController.dispose();
     super.dispose();
-  }
-
-  void SignUp() {
-    setState(() {
-      loading = true;
-    });
-    _auth
-        .createUserWithEmailAndPassword(
-            email: emailController.text.toString(),
-            password: passwordController.text.toString())
-        .then((value) {
-      setState(() {
-        loading = false;
-      });
-    }).onError((error, stackTrace) {
-      Utils().tostMessage(error.toString());
-      setState(() {
-        loading = false;
-      });
-    });
   }
 
   @override
@@ -70,7 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 children: [
                   TextFormField(
                     keyboardType: TextInputType.emailAddress,
-                    controller: emailController,
+                    controller: con.emailSinUp,
                     decoration: InputDecoration(
                       hintText: 'Email',
                       prefix: Icon(Icons.alternate_email),
@@ -87,8 +65,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   TextFormField(
                     keyboardType: TextInputType.text,
-                    // obscureText: true,
-                    controller: passwordController,
+                    controller: con.passwordSinUp,
                     decoration: InputDecoration(
                       hintText: 'Password',
                       prefix: Icon(Icons.alternate_email),
@@ -108,31 +85,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
             Roundbutton(
               title: 'SignUp',
-              loading: loading,
-              onTap: () {
+              loading: con.load.value,
+              onTap: () async {
                 if (_formKey.currentState!.validate()) {
-                  SignUp();
-
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => PostScreen()));
-
-                  // setState(() {
-                  //   loading = true;
-                  // });
-                  // _auth
-                  //     .createUserWithEmailAndPassword(
-                  //         email: emailController.text.toString(),
-                  //         password: passwordController.text.toString())
-                  //     .then((value) {
-                  //   setState(() {
-                  //     loading = false;
-                  //   });
-                  // }).onError((error, stackTrace) {
-                  //   Utils().tostMessage(error.toString());
-                  //   setState(() {
-                  //     loading = false;
-                  //   });
-                  // });
+                  bool isSuccess = await con.signUp();
+                  if (isSuccess) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreenView()));
+                  }
                 }
               },
             ),
@@ -147,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LoginScreen(),
+                        builder: (context) => LoginView(),
                       ),
                     );
                   },
