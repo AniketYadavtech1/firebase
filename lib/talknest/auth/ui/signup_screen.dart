@@ -1,19 +1,23 @@
-import 'package:firebase_complete/chat/ui/home.dart';
+import 'package:firebase_complete/talknest/profile/ui/profile_photo.dart';
+import 'package:firebase_complete/utils/app_color.dart';
+import 'package:firebase_complete/utils/app_text.dart';
+import 'package:firebase_complete/utils/common_button.dart';
+import 'package:firebase_complete/utils/commont_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../widgets/roundbutton.dart';
+import '../../../utils/roundbutton.dart';
 import '../controller/auth_controller.dart';
 import 'login_screen.dart';
 
-class SignupView extends StatefulWidget {
-  const SignupView({super.key});
+class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
 
   @override
-  State<SignupView> createState() => _SignupViewState();
+  State<SignupScreen> createState() => _SignupScreenState();
 }
 
-class _SignupViewState extends State<SignupView> {
+class _SignupScreenState extends State<SignupScreen> {
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
 
@@ -29,12 +33,14 @@ class _SignupViewState extends State<SignupView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:Colors.blueGrey,
       appBar: AppBar(
+        backgroundColor:Colors.blueGrey,
         leading: Icon(
           Icons.arrow_back_ios,
           size: 15,
         ),
-        title: Text('SignUp'),
+        title: Text('SignUp',style: AppText.black14600,),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -46,13 +52,9 @@ class _SignupViewState extends State<SignupView> {
               key: _formKey,
               child: Column(
                 children: [
-                  TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    controller: con.emailSinUp,
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      prefix: Icon(Icons.alternate_email),
-                    ),
+                  CommonTextField(
+                    labelText: "Email",
+                    con: con.emailSinUp,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Enter email id";
@@ -63,13 +65,9 @@ class _SignupViewState extends State<SignupView> {
                   SizedBox(
                     height: 10,
                   ),
-                  TextFormField(
-                    keyboardType: TextInputType.text,
-                    controller: con.passwordSinUp,
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      prefix: Icon(Icons.alternate_email),
-                    ),
+                  CommonTextField(
+                    labelText: "Email",
+                    con: con.emailController,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Enter password";
@@ -83,17 +81,25 @@ class _SignupViewState extends State<SignupView> {
             SizedBox(
               height: 20,
             ),
-            Roundbutton(
-              title: 'SignUp',
-              loading: con.load.value,
-              onTap: () async {
-                if (_formKey.currentState!.validate()) {
-                  bool isSuccess = await con.signUp();
-                  if (isSuccess) {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreenView()));
+            Obx(
+              () => CommonButton(
+                buttonColor: AppColors.gradientThree,
+                buttonBorderColor: AppColors.gradientThree,
+                labelColor: AppColors.white,
+                label: "Sign Up",
+                load: con.loading.value,
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    bool isSuccess = await con.signUp();
+                    if (isSuccess) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditProfileView()));
+                    }
                   }
-                }
-              },
+                },
+              ),
             ),
             SizedBox(
               height: 10,
@@ -106,7 +112,7 @@ class _SignupViewState extends State<SignupView> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LoginView(),
+                        builder: (context) => LoginScreen(),
                       ),
                     );
                   },

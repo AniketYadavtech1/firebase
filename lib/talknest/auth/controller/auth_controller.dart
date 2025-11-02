@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_complete/chat/component/login_screen.dart';
-import 'package:firebase_complete/utils/utils.dart';
+import 'package:firebase_complete/utils/local_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
+import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 class AuthController extends GetxController {
   RxBool loading = false.obs;
@@ -11,10 +11,14 @@ class AuthController extends GetxController {
   RxBool loadUser = false.obs;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final emailSinUp = TextEditingController();
   final passwordSinUp = TextEditingController();
+  final _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  String verificationId = "";
+
+  late final userId = _auth.currentUser?.uid ?? "";
 
   Future<bool> login() async {
     try {
@@ -27,7 +31,6 @@ class AuthController extends GetxController {
       return true;
     } catch (error) {
       loading.value = false;
-      Utils().tostMessage(error.toString());
       return false;
     }
   }
@@ -43,22 +46,27 @@ class AuthController extends GetxController {
         "uid": userCredential.user!.uid,
         "email": emailSinUp.text.trim(),
       });
+      await LocalStorage.saveUserId(userCredential.user!.uid);
 
       load.value = false;
       return true;
     } catch (error) {
       load.value = false;
-      Utils().tostMessage(error.toString());
       return false;
     }
   }
 
-  Future<void> signOut() async {
+  Future<void> logout() async {
     try {
+      loadUser.value = true;
       await _auth.signOut();
-      Get.offAll(() => LoginView());
-    } catch (error) {
-      Utils().tostMessage("Signout failed: $error");
+      emailController.clear();
+      passwordController.clear();
+      emailSinUp.clear();
+      passwordSinUp.clear();
+      loadUser.value = false;
+    } catch (e) {
+      loadUser.value = false;
     }
   }
 }

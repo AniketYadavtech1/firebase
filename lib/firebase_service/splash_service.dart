@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_complete/chat/component/login_screen.dart';
+import 'package:firebase_complete/talknest/auth/ui/login_screen.dart';
 import 'package:flutter/material.dart';
-
 import '../ui/firestore/firestore_list.screen.dart';
 
 class SplashServices {
@@ -27,7 +25,7 @@ class SplashServices {
         () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => LoginView(),
+            builder: (context) => LoginScreen(),
           ),
         ),
       );

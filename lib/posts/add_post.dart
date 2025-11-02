@@ -1,5 +1,5 @@
 import 'package:firebase_complete/utils/utils.dart';
-import 'package:firebase_complete/widgets/roundbutton.dart';
+import 'package:firebase_complete/utils/roundbutton.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -61,13 +61,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
                   'title': postController.text.toString(),
                   'id': DateTime.now().millisecondsSinceEpoch.toString(),
                 }).then((value) {
-                  Utils().tostMessage('Post added');
+                  // Utils().tostMessage('Post added');
                   setState(() {
                     loading = false;
                   });
                 }).onError(
                   (error, stackTrace) {
-                    Utils().tostMessage(error.toString());
+                    // Utils().tostMessage(error.toString());
                     setState(
                       () {
                         loading = false;

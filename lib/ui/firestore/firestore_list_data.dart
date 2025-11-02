@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_complete/utils/utils.dart';
-import 'package:firebase_complete/widgets/roundbutton.dart';
+import 'package:firebase_complete/utils/roundbutton.dart';
 import 'package:flutter/material.dart';
 
 class AddFireStoreScreen extends StatefulWidget {
@@ -54,7 +54,7 @@ class _AddFireStoreScreenState extends State<AddFireStoreScreen> {
               loading: loading,
               onTap: () {
                 if (postController.text.trim().isEmpty) {
-                  Utils().tostMessage("Please enter some text");
+                  // Utils().tostMessage("Please enter some text");
                   return;
                 }
                 setState(() {
@@ -70,14 +70,14 @@ class _AddFireStoreScreenState extends State<AddFireStoreScreen> {
                   setState(() {
                     loading = false;
                   });
-                  Utils().tostMessage('Post added');
+                  // Utils().tostMessage('Post added');
                   print('Post added successfully');
                 }).onError((error, stackTrace) {
                   setState(() {
                     loading = false;
                   });
                   print('Error : $error');
-                  Utils().tostMessage(error.toString());
+                  // Utils().tostMessage(error.toString());
                 });
               },
             )

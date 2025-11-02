@@ -1,21 +1,22 @@
-import 'package:firebase_complete/chat/component/signup_screen.dart';
-import 'package:firebase_complete/chat/ui/home.dart';
-import 'package:firebase_complete/ui/auth/login_with_phone.dart';
+import 'package:firebase_complete/talknest/auth/ui/signup_screen.dart'
+    show SignupScreen;
+import 'package:firebase_complete/talknest/profile/ui/profile_photo.dart';
+import 'package:firebase_complete/utils/app_color.dart';
+import 'package:firebase_complete/utils/common_button.dart';
+import 'package:firebase_complete/utils/commont_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-
-import '../../widgets/roundbutton.dart';
 import '../controller/auth_controller.dart';
 
-class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginScreenState extends State<LoginScreen> {
   final con = Get.put<AuthController>(AuthController());
   final _formKey = GlobalKey<FormState>();
 
@@ -30,10 +31,6 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(
-          Icons.arrow_back_ios,
-          size: 15,
-        ),
         centerTitle: true,
         automaticallyImplyLeading: false,
         title: Text('Login Page'),
@@ -44,7 +41,7 @@ class _LoginViewState extends State<LoginView> {
           return true;
         },
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,13 +50,9 @@ class _LoginViewState extends State<LoginView> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      controller: con.emailController,
-                      decoration: InputDecoration(
-                        hintText: 'Email',
-                        prefix: Icon(Icons.alternate_email),
-                      ),
+                    CommonTextField(
+                      labelText: "Email",
+                      con: con.emailController,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Enter email id";
@@ -67,17 +60,13 @@ class _LoginViewState extends State<LoginView> {
                         return null;
                       },
                     ),
+
                     SizedBox(
                       height: 10,
                     ),
-                    TextFormField(
-                      keyboardType: TextInputType.text,
-                      // obscureText: true,
-                      controller: con.passwordController,
-                      decoration: InputDecoration(
-                        hintText: 'Password',
-                        prefix: Icon(Icons.alternate_email),
-                      ),
+                    CommonTextField(
+                      labelText: "Password",
+                      con: con.passwordController,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return "Enter password";
@@ -91,17 +80,22 @@ class _LoginViewState extends State<LoginView> {
               SizedBox(
                 height: 20,
               ),
-              Roundbutton(
-                title: 'Login',
-                loading: con.loading.value,
-                onTap: () async {
-                  if (_formKey.currentState!.validate()) {
-                    bool isSuccess = await con.login();
-                    if (isSuccess) {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreenView()));
+              Obx(
+                () => CommonButton(
+                  buttonColor: AppColors.gradientThree,
+                  buttonBorderColor: AppColors.gradientThree,
+                  labelColor: AppColors.white,
+                  label: "Sign Up",
+                  load: con.loading.value,
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      bool isSuccess = await con.login();
+                      if (isSuccess) {
+                        Get.off(EditProfileView());
+                      }
                     }
-                  }
-                },
+                  },
+                ),
               ),
               SizedBox(
                 height: 10,
@@ -114,7 +108,7 @@ class _LoginViewState extends State<LoginView> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SignupView(),
+                          builder: (context) => SignupScreen(),
                         ),
                       );
                     },
@@ -125,22 +119,6 @@ class _LoginViewState extends State<LoginView> {
               SizedBox(
                 height: 30,
               ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginWithPhone()));
-                },
-                child: Container(
-                  height: 50,
-                  width: MediaQuery.sizeOf(context).width,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    border: Border.all(
-                      color: Colors.black,
-                    ),
-                  ),
-                  child: Center(child: Text('Login with Phone Number')),
-                ),
-              )
             ],
           ),
         ),

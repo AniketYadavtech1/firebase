@@ -1,7 +1,7 @@
-import 'package:firebase_complete/chat/component/chat_page.dart';
-import 'package:firebase_complete/chat/component/user_tile.dart';
-import 'package:firebase_complete/chat/controller/auth_controller.dart';
-import 'package:firebase_complete/chat/controller/chat_controller.dart';
+import 'package:firebase_complete/talknest/auth/controller/auth_controller.dart';
+import 'package:firebase_complete/talknest/chat/component/chat_page.dart';
+import 'package:firebase_complete/talknest/chat/component/user_tile.dart';
+import 'package:firebase_complete/talknest/chat/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -26,6 +26,14 @@ class _HomeScreenViewState extends State<HomeScreenView> {
           },
           icon: Icon(Icons.arrow_back_ios),
         ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Get.find<AuthController>().logout();
+            },
+            child: Text("Logout"),
+          )
+        ],
       ),
       body: _buildUserList(),
     );
@@ -45,7 +53,9 @@ Widget _buildUserList() {
       }
 
       return ListView(
-        children: snapshot.data!.map<Widget>((userData) => _buildUserListItem(userData, context)).toList(),
+        children: snapshot.data!
+            .map<Widget>((userData) => _buildUserListItem(userData, context))
+            .toList(),
       );
     },
   );

@@ -193,9 +193,9 @@ class _PostScreenState extends State<PostScreen> {
                     'title': editController.text.toLowerCase(),
                   },
                 ).then((value) {
-                  Utils().tostMessage("Post Update");
+                  // Utils().tostMessage("Post Update");
                 }).onError((error, stackTrace) {
-                  Utils().tostMessage(error.toString());
+                  // Utils().tostMessage(error.toString());
                 });
               },
               child: Text("Update"),

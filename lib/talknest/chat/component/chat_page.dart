@@ -1,5 +1,5 @@
-import 'package:firebase_complete/chat/controller/auth_controller.dart';
-import 'package:firebase_complete/chat/controller/chat_controller.dart';
+
+import 'package:firebase_complete/talknest/chat/controller/chat_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -29,15 +29,7 @@ class _ChatPageState extends State<ChatPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(widget.receivedEmail),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Colors.red),
-            onPressed: () {
-              final AuthController con = Get.find();
-              con.signOut();
-            },
-          ),
-        ],
+        actions: [],
       ),
       body: Column(
         children: [
@@ -62,17 +54,20 @@ class _ChatPageState extends State<ChatPage> {
                     final isMe = msg["senderId"] == con.currentUserId;
 
                     return Align(
-                      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                      alignment:
+                          isMe ? Alignment.centerRight : Alignment.centerLeft,
                       child: Container(
                         padding: const EdgeInsets.all(10),
-                        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 5, horizontal: 10),
                         decoration: BoxDecoration(
                           color: isMe ? Colors.blue : Colors.grey[300],
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
                           msg["message"] ?? "",
-                          style: TextStyle(color: isMe ? Colors.white : Colors.black),
+                          style: TextStyle(
+                              color: isMe ? Colors.white : Colors.black),
                         ),
                       ),
                     );
