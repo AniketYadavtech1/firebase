@@ -1,7 +1,8 @@
 import 'package:firebase_complete/talknest/chat/controller/chat_controller.dart';
+import 'package:firebase_complete/utils/app_color.dart';
+import 'package:firebase_complete/utils/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 
 class ChatPage extends StatefulWidget {
   final String receivedName;
@@ -30,7 +31,16 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(widget.receivedName)),
+      appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.arrow_back)),
+          title: Text(
+            widget.receivedName,
+            style: AppText.black14600,
+          )),
       body: SafeArea(
         child: Column(
           children: [
@@ -59,7 +69,7 @@ class _ChatPageState extends State<ChatPage> {
                         child: Container(
                           padding: EdgeInsets.all(12),
                           margin:
-                              EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                              EdgeInsets.symmetric(vertical: 5, horizontal: 15),
                           decoration: BoxDecoration(
                             color: isMe ? Colors.blue : Colors.grey[300],
                             borderRadius: BorderRadius.circular(10),
@@ -78,20 +88,30 @@ class _ChatPageState extends State<ChatPage> {
               ),
             ),
             SafeArea(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _messageController,
-                      decoration:
-                          InputDecoration(hintText: "Type a message..."),
-                    ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                child: Card(
+                  color: AppColors.white,
+                  elevation: 0.5,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: TextField(
+                            controller: _messageController,
+                            decoration:
+                                InputDecoration(hintText: "Type a message"),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.send),
+                        onPressed: sendMessage,
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    icon: Icon(Icons.send),
-                    onPressed: sendMessage,
-                  ),
-                ],
+                ),
               ),
             ),
           ],

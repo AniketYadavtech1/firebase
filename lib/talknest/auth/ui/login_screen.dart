@@ -1,7 +1,6 @@
 import 'package:firebase_complete/talknest/auth/ui/signup_screen.dart'
     show SignupScreen;
 import 'package:firebase_complete/talknest/chat/ui/home.dart';
-import 'package:firebase_complete/talknest/profile/ui/profile_photo.dart';
 import 'package:firebase_complete/utils/app_color.dart';
 import 'package:firebase_complete/utils/app_text.dart';
 import 'package:firebase_complete/utils/common_button.dart';
@@ -23,18 +22,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
 
   @override
-  void dispose() {
-    con.emailController.dispose();
-    con.passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: AppColors.white,
         automaticallyImplyLeading: false,
         title: Text(
           'Login Page',
@@ -95,23 +87,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       bool isSuccess = await con.login();
-
                       if (isSuccess) {
+                        await con.fetchCurrentUserName();
                         Get.snackbar(
                           "Success",
                           "Login Successfully",
                           backgroundColor: AppColors.gradientOne,
-                          colorText: Colors.white,
+                          colorText: AppColors.white,
                           duration: Duration(seconds: 4),
                         );
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => HomeScreenView()));
-                      }else{
+                                builder: (context) => HomeScreenViewChat()));
+                      } else {
                         Get.snackbar(
                           "Error",
-                          "Login Successfully",
+                          "Login Failed",
                           backgroundColor: AppColors.red,
                           colorText: Colors.white,
                           duration: Duration(seconds: 4),

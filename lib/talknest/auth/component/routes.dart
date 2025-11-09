@@ -10,8 +10,8 @@ import '../../chat/ui/home.dart';
 class AppPages {
   final List<GetPage<dynamic>> pages = <GetPage<dynamic>>[
     GetPage<dynamic>(name: Routes.initial, page: () => SplashScreen()),
-    GetPage<dynamic>(name: Routes.signupInScreen, page: () => HomeScreenView()),
-    GetPage<dynamic>(name: Routes.signInScreen, page: () => HomeScreenView()),
+    GetPage<dynamic>(name: Routes.signupInScreen, page: () => HomeScreenViewChat()),
+    GetPage<dynamic>(name: Routes.signInScreen, page: () => HomeScreenViewChat()),
     GetPage<dynamic>(name: Routes.signInScreen, page: () => EditProfileView()),
 
   ];

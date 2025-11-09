@@ -17,7 +17,7 @@ class SplashController extends GetxController {
 
     if (_auth.currentUser != null) {
       // ✅ User is logged in
-      Get.offAll(() => HomeScreenView());
+      Get.offAll(() => HomeScreenViewChat());
     } else {
       // ❌ Not logged in
       Get.offAll(() => LoginScreen());

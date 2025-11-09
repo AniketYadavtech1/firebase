@@ -1,5 +1,6 @@
 import 'package:firebase_complete/notification/home_screen.dart';
-import 'package:firebase_complete/talknest/profile/ui/profile_photo.dart';
+import 'package:firebase_complete/talknest/chat/ui/home.dart';
+
 import 'package:firebase_complete/utils/app_color.dart';
 import 'package:firebase_complete/utils/app_text.dart';
 import 'package:firebase_complete/utils/common_button.dart';
@@ -7,7 +8,6 @@ import 'package:firebase_complete/utils/commont_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../utils/roundbutton.dart';
 import '../controller/auth_controller.dart';
 import 'login_screen.dart';
 
@@ -34,9 +34,9 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: AppColors.white,
         leading: Icon(
           Icons.arrow_back_ios,
           size: 15,
@@ -103,32 +103,34 @@ class _SignupScreenState extends State<SignupScreen> {
                 buttonColor: AppColors.gradientThree,
                 buttonBorderColor: AppColors.gradientThree,
                 labelColor: AppColors.white,
-                label: con.loading.value ? "Please wait" : "Sign Up",
-                load: con.loading.value,
+                load: con.loadSign.value,
+                label: "SignUp",
                 onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    bool success = await con.signUp(
-                      username: con.nameController.text.trim(),
-                      email: con.emailSinUp.text.trim(),
-                      password: con.passwordSinUp.text.trim(),
-                    );
-                    if (success) {
-                      Get.snackbar(
-                        "Success",
-                        "Signup Successfully",
-                        backgroundColor: AppColors.gradientOne,
-                        colorText: Colors.white,
-                      );
+                  FocusScope.of(context).unfocus();
+                  bool isSuccess = await con.signUp(
+                    con.nameController.text.trim(),
+                    con.emailSinUp.text.trim(),
+                    con.passwordSinUp.text.trim(),
+                  );
 
-                      Get.off(HomeScreen());
-                    } else {
-                      Get.snackbar(
-                        "Failed",
-                        "Something went wrong",
-                        backgroundColor: Colors.red,
-                        colorText: Colors.white,
-                      );
-                    }
+                  if (isSuccess) {
+                    Get.snackbar(
+                      "Success",
+                      "SingUp Successfully",
+                      backgroundColor: AppColors.gradientOne,
+                      colorText: Colors.white,
+                      duration: Duration(seconds: 4),
+                    );
+                    await con.fetchCurrentUserName();
+                    Get.off(() => HomeScreenViewChat());
+                  } else {
+                    Get.snackbar(
+                      "Error",
+                      "SignUp failed",
+                      backgroundColor: AppColors.red,
+                      colorText: Colors.white,
+                      duration: Duration(seconds: 4),
+                    );
                   }
                 },
               ),
