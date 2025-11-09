@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:firebase_complete/utils/local_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,11 +9,6 @@ import 'package:flutter/material.dart';
 import '../../auth/controller/auth_controller.dart';
 
 class ProfileController extends GetxController {
-
-
-
-
-
   final auth = Get.find<AuthController>();
   Rxn<File> image = Rxn<File>();
   RxBool upload = false.obs;
@@ -28,32 +25,26 @@ class ProfileController extends GetxController {
   Future<void> updateProfile() async {
     try {
       upload.value = true;
-
-      final uid = auth.userId;
-      String? downloadUrl;
-
+      final userId = await LocalStorage.getUserId();
+      if (userId == null) return;
+      String? imageUrl;
       if (image.value != null) {
         final ref = FirebaseStorage.instance
             .ref()
-            .child("profile_images")
-            .child("$uid.jpg");
-
+            .child("profile")
+            .child("$userId.jpg");
         await ref.putFile(image.value!);
-        downloadUrl = await ref.getDownloadURL();
+        imageUrl = await ref.getDownloadURL();
       }
-      await FirebaseFirestore.instance.collection("Users").doc(uid).set({
-        "name": nameCon.text.trim(),
-        "profileImage": downloadUrl ?? profileUrl.value,
+      await FirebaseFirestore.instance.collection("users").doc(userId).set({
+        "name": nameCon.text,
+        "profileImage": imageUrl,
       }, SetOptions(merge: true));
-
-      profileUrl.value = downloadUrl ?? profileUrl.value;
-
-      Get.snackbar("Success", "Profile Updated");
-      image.value = null;
-    } catch (e) {
-      Get.snackbar("Error", e.toString());
-    } finally {
       upload.value = false;
+      Get.back();
+    } catch (e) {
+      upload.value = false;
+      print("Error uploading profile: $e");
     }
   }
 

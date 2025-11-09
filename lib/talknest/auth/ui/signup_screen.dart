@@ -1,3 +1,4 @@
+import 'package:firebase_complete/notification/home_screen.dart';
 import 'package:firebase_complete/talknest/profile/ui/profile_photo.dart';
 import 'package:firebase_complete/utils/app_color.dart';
 import 'package:firebase_complete/utils/app_text.dart';
@@ -33,14 +34,17 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Colors.blueGrey,
+      backgroundColor: Colors.blueGrey,
       appBar: AppBar(
-        backgroundColor:Colors.blueGrey,
+        backgroundColor: Colors.blueGrey,
         leading: Icon(
           Icons.arrow_back_ios,
           size: 15,
         ),
-        title: Text('SignUp',style: AppText.black14600,),
+        title: Text(
+          'SignUp',
+          style: AppText.black14600,
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -52,6 +56,19 @@ class _SignupScreenState extends State<SignupScreen> {
               key: _formKey,
               child: Column(
                 children: [
+                  CommonTextField(
+                    labelText: "Name",
+                    con: con.nameController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Enter Name ";
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   CommonTextField(
                     labelText: "Email",
                     con: con.emailSinUp,
@@ -66,8 +83,8 @@ class _SignupScreenState extends State<SignupScreen> {
                     height: 10,
                   ),
                   CommonTextField(
-                    labelText: "Email",
-                    con: con.emailController,
+                    labelText: "Password",
+                    con: con.passwordSinUp,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Enter password";
@@ -86,16 +103,31 @@ class _SignupScreenState extends State<SignupScreen> {
                 buttonColor: AppColors.gradientThree,
                 buttonBorderColor: AppColors.gradientThree,
                 labelColor: AppColors.white,
-                label: "Sign Up",
+                label: con.loading.value ? "Please wait" : "Sign Up",
                 load: con.loading.value,
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    bool isSuccess = await con.signUp();
-                    if (isSuccess) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => EditProfileView()));
+                    bool success = await con.signUp(
+                      username: con.nameController.text.trim(),
+                      email: con.emailSinUp.text.trim(),
+                      password: con.passwordSinUp.text.trim(),
+                    );
+                    if (success) {
+                      Get.snackbar(
+                        "Success",
+                        "Signup Successfully",
+                        backgroundColor: AppColors.gradientOne,
+                        colorText: Colors.white,
+                      );
+
+                      Get.off(HomeScreen());
+                    } else {
+                      Get.snackbar(
+                        "Failed",
+                        "Something went wrong",
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
                     }
                   }
                 },

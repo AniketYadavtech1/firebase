@@ -4,13 +4,15 @@ import 'package:get/get.dart';
 
 class SplashScreen extends StatelessWidget {
   SplashScreen({super.key});
-  final con = Get.put<SplashController>(SplashController());
+
+  final SplashController con = Get.put(SplashController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       body: Center(
-        child: Icon(Icons.chat,size: 100,)
+        child: Icon(Icons.chat, size: 100, color: Colors.white),
       ),
     );
   }

@@ -1,7 +1,9 @@
 import 'package:firebase_complete/talknest/auth/ui/signup_screen.dart'
     show SignupScreen;
+import 'package:firebase_complete/talknest/chat/ui/home.dart';
 import 'package:firebase_complete/talknest/profile/ui/profile_photo.dart';
 import 'package:firebase_complete/utils/app_color.dart';
+import 'package:firebase_complete/utils/app_text.dart';
 import 'package:firebase_complete/utils/common_button.dart';
 import 'package:firebase_complete/utils/commont_textfield.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +32,14 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       appBar: AppBar(
-        centerTitle: true,
+        backgroundColor: Colors.blueGrey,
         automaticallyImplyLeading: false,
-        title: Text('Login Page'),
+        title: Text(
+          'Login Page',
+          style: AppText.black14600,
+        ),
       ),
       body: WillPopScope(
         onWillPop: () async {
@@ -41,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return true;
         },
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -60,7 +66,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         return null;
                       },
                     ),
-
                     SizedBox(
                       height: 10,
                     ),
@@ -85,13 +90,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   buttonColor: AppColors.gradientThree,
                   buttonBorderColor: AppColors.gradientThree,
                   labelColor: AppColors.white,
-                  label: "Sign Up",
+                  label: "login",
                   load: con.loading.value,
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       bool isSuccess = await con.login();
+
                       if (isSuccess) {
-                        Get.off(EditProfileView());
+                        Get.snackbar(
+                          "Success",
+                          "Login Successfully",
+                          backgroundColor: AppColors.gradientOne,
+                          colorText: Colors.white,
+                          duration: Duration(seconds: 4),
+                        );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeScreenView()));
+                      }else{
+                        Get.snackbar(
+                          "Error",
+                          "Login Successfully",
+                          backgroundColor: AppColors.red,
+                          colorText: Colors.white,
+                          duration: Duration(seconds: 4),
+                        );
                       }
                     }
                   },

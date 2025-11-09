@@ -7,7 +7,7 @@
 
 
     <application
-        android:label="firebase_complete"
+        android:label="Chat Wave"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

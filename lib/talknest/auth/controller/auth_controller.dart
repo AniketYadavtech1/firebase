@@ -13,6 +13,7 @@ class AuthController extends GetxController {
   final passwordController = TextEditingController();
   final emailSinUp = TextEditingController();
   final passwordSinUp = TextEditingController();
+  final nameController = TextEditingController();
   final _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -35,23 +36,35 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<bool> signUp() async {
-    try {
-      load.value = true;
-      final userCredential = await _auth.createUserWithEmailAndPassword(
-        email: emailSinUp.text.trim(),
-        password: passwordSinUp.text.trim(),
-      );
-      await _firestore.collection("Users").doc(userCredential.user!.uid).set({
-        "uid": userCredential.user!.uid,
-        "email": emailSinUp.text.trim(),
-      });
-      await LocalStorage.saveUserId(userCredential.user!.uid);
+  Future<bool> signUp({
+    required String username,
+    required String email,
+    required String password,
+  }) async {
+    loading.value = true;
 
-      load.value = false;
+    try {
+      UserCredential userCredential =
+      await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      String uid = userCredential.user!.uid;
+
+      await _firestore.collection("Users").doc(uid).set({
+        "uid": uid,
+        "username": username,
+        "email": email,
+        "createdAt": FieldValue.serverTimestamp(),
+      });
+
+      loading.value = false;
       return true;
-    } catch (error) {
-      load.value = false;
+
+    } catch (e) {
+      print("SignUp Error: $e");
+      loading.value = false;
       return false;
     }
   }
@@ -65,6 +78,7 @@ class AuthController extends GetxController {
       emailSinUp.clear();
       passwordSinUp.clear();
       loadUser.value = false;
+      nameController.clear();
     } catch (e) {
       loadUser.value = false;
     }

@@ -1,79 +1,54 @@
-import 'package:firebase_complete/talknest/auth/controller/auth_controller.dart';
-import 'package:firebase_complete/talknest/chat/component/chat_page.dart';
-import 'package:firebase_complete/talknest/chat/component/user_tile.dart';
-import 'package:firebase_complete/talknest/chat/controller/chat_controller.dart';
+import 'package:firebase_complete/utils/app_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../controller/chat_controller.dart';
+import '../component/chat_page.dart';
 
-class HomeScreenView extends StatefulWidget {
-  const HomeScreenView({super.key});
+class HomeScreenView extends StatelessWidget {
+  final ChatController controller = Get.put(ChatController());
 
-  @override
-  State<HomeScreenView> createState() => _HomeScreenViewState();
-}
-
-final con = Get.find()<ChatController>(ChatController());
-final AuthCon = Get.find()<AuthController>(AuthController());
-
-class _HomeScreenViewState extends State<HomeScreenView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.arrow_back_ios),
-        ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              Get.find<AuthController>().logout();
+          title: Text(
+        "Users",
+        style: AppText.black14600,
+      )),
+      body: StreamBuilder<List<Map<String, dynamic>>>(
+        stream: controller.getUserStream(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final users = snapshot.data!;
+
+          return ListView.builder(
+            itemCount: users.length,
+            itemBuilder: (context, index) {
+              final user = users[index];
+
+              // Skip current logged-in user
+              if (user["uid"] == controller.currentUserId) return SizedBox();
+
+              return ListTile(
+                title: Text(
+                  user["username"] ?? user["email"],
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+                onTap: () {
+                  Get.to(() => ChatPage(
+                    receiverID: user["uid"],
+                    receivedName: user["username"] ?? user["email"],
+                  ));
+                },
+              );
             },
-            child: Text("Logout"),
-          )
-        ],
+          );
+
+        },
       ),
-      body: _buildUserList(),
     );
   }
-}
-
-Widget _buildUserList() {
-  final con = Get.put<ChatController>(ChatController());
-  return StreamBuilder(
-    stream: con.getUserStream(),
-    builder: (context, snapshot) {
-      if (snapshot.hasError) {
-        return const Center(child: Text("Error"));
-      }
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Center(child: CircularProgressIndicator());
-      }
-
-      return ListView(
-        children: snapshot.data!
-            .map<Widget>((userData) => _buildUserListItem(userData, context))
-            .toList(),
-      );
-    },
-  );
-}
-
-Widget _buildUserListItem(Map<String, dynamic> userData, BuildContext context) {
-  return UserTile(
-    text: userData["email"],
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ChatPage(
-            receivedEmail: userData["email"],
-            receiverID: userData["uid"],
-          ),
-        ),
-      );
-    },
-  );
 }
