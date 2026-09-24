@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
-
   RxBool loading = false.obs;
   RxBool loadSign = false.obs;
   RxBool load = false.obs;
