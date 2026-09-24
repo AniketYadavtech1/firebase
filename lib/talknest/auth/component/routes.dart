@@ -4,7 +4,6 @@ import 'package:firebase_complete/talknest/auth/ui/login_screen.dart';
 import 'package:firebase_complete/talknest/auth/ui/signup_screen.dart';
 import 'package:firebase_complete/talknest/profile/ui/profile_photo.dart';
 import 'package:get/get.dart';
-
 import '../../chat/ui/home.dart';
 
 class AppPages {
@@ -13,7 +12,6 @@ class AppPages {
     GetPage<dynamic>(name: Routes.signupInScreen, page: () => HomeScreenViewChat()),
     GetPage<dynamic>(name: Routes.signInScreen, page: () => HomeScreenViewChat()),
     GetPage<dynamic>(name: Routes.signInScreen, page: () => EditProfileView()),
-
   ];
 }
 

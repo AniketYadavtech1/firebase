@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_complete/utils/app_color.dart';
-import 'package:firebase_complete/utils/local_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 
 class AuthController extends GetxController {
+
   RxBool loading = false.obs;
   RxBool loadSign = false.obs;
   RxBool load = false.obs;
@@ -24,7 +21,6 @@ class AuthController extends GetxController {
   String verificationId = "";
 
   late final userId = _auth.currentUser?.uid ?? "";
-
 
   @override
   void onClose() {
@@ -54,9 +50,7 @@ class AuthController extends GetxController {
   Future<bool> signUp(String username, String email, String password) async {
     try {
       loadSign.value = true;
-
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -103,8 +97,7 @@ class AuthController extends GetxController {
     try {
       if (_auth.currentUser != null) {
         final uid = _auth.currentUser!.uid;
-        DocumentSnapshot userDoc =
-            await _firestore.collection("Users").doc(uid).get();
+        DocumentSnapshot userDoc = await _firestore.collection("Users").doc(uid).get();
         if (userDoc.exists && userDoc.data() != null) {
           var data = userDoc.data() as Map<String, dynamic>;
           currentUserName.value = data["username"] ?? "";
@@ -129,10 +122,10 @@ class AuthController extends GetxController {
       loadUser.value = false;
     }
   }
+
   @override
   void onInit() {
     fetchCurrentUserName();
     super.onInit();
   }
-
 }

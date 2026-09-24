@@ -1,8 +1,5 @@
-import 'package:firebase_complete/notification/home_screen.dart';
 import 'package:firebase_complete/talknest/chat/ui/home.dart';
-
 import 'package:firebase_complete/utils/app_color.dart';
-import 'package:firebase_complete/utils/app_text.dart';
 import 'package:firebase_complete/utils/common_button.dart';
 import 'package:firebase_complete/utils/commont_textfield.dart';
 import 'package:flutter/material.dart';
@@ -37,14 +34,14 @@ class _SignupScreenState extends State<SignupScreen> {
       backgroundColor: AppColors.white,
       appBar: AppBar(
         backgroundColor: AppColors.white,
-        leading: Icon(
-          Icons.arrow_back_ios,
-          size: 15,
-        ),
-        title: Text(
-          'SignUp',
-          style: AppText.black14600,
-        ),
+        // leading: Icon(
+        //   Icons.arrow_back_ios,
+        //   size: 15,
+        // ),
+        // title: Text(
+        //   'SignUp',
+        //   style: AppText.black14600,
+        // ),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
@@ -52,6 +49,47 @@ class _SignupScreenState extends State<SignupScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Center(
+              child: Container(
+                height: 72,
+                width: 72,
+                decoration: BoxDecoration(
+                  color: AppColors.gradientThree,
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                child: const Icon(
+                  Icons.chat_bubble_rounded,
+                  color: Colors.white,
+                  size: 34,
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            Center(
+              child: Text(
+                "New User Register ",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black87,
+                  letterSpacing: -0.6,
+                ),
+              ),
+            ),
+            Center(
+              child: Text(
+                "Register in to continue to TalkNest",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
             Form(
               key: _formKey,
               child: Column(

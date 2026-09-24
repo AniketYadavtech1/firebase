@@ -13,13 +13,11 @@ class SplashController extends GetxController {
   }
 
   void checkUserLogin() async {
-    await Future.delayed(Duration(seconds: 2)); // Splash delay
+    await Future.delayed(Duration(seconds: 2));
 
     if (_auth.currentUser != null) {
-      // ✅ User is logged in
       Get.offAll(() => HomeScreenViewChat());
     } else {
-      // ❌ Not logged in
       Get.offAll(() => LoginScreen());
     }
   }

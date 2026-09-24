@@ -1,16 +1,15 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 import 'message_screen.dart';
 
-class NotificationService {
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
+class NotificationService {
+
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 

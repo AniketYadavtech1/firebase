@@ -62,9 +62,7 @@ class _ChatPageState extends State<ChatPage> {
                   if (!snapshot.hasData) {
                     return const Center(child: CircularProgressIndicator());
                   }
-
                   final messages = snapshot.data!.docs;
-
                   return ListView.builder(
                     reverse: true,
                     itemCount: messages.length,

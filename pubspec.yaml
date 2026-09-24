@@ -49,7 +49,7 @@ dependencies:
   cached_network_image: ^3.4.1
   flutter_svg: ^2.2.1
   shared_preferences: ^2.5.3
-  emoji_picker_flutter: ^4.3.0
+  emoji_picker_flutter: ^4.4.0
 
 
 
