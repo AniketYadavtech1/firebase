@@ -16,7 +16,6 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
   final fireStore = FirebaseFirestore.instance.collection('users').snapshots();
 
   CollectionReference ref = FirebaseFirestore.instance.collection('users');
-  // final ref1 = FirebaseFirestore.instance.collection('users');
 
   @override
   void initState() {
@@ -59,25 +58,10 @@ class _FireStoreScreenState extends State<FireStoreScreen> {
                   itemBuilder: (context, index) {
                     return ListTile(
                       onTap: () {
-                        // ref
-                        //     .doc(snapshot.data!.docs[index]['id'].toString())
-                        //     .update({
-                        //   'title': 'i am not good in flutter',
-                        // }).then((value) {
-                        //   Utils().tostMessage('update');
-                        // }).onError((error, stackTrace) {
-                        //   Utils().tostMessage(error.toString());
-                        // });
-                        //
-
-                        ref
-                            .doc(snapshot.data!.docs[index]['id'].toString())
-                            .delete();
+                        ref.doc(snapshot.data!.docs[index]['id'].toString()).delete();
                       },
-                      title:
-                          Text(snapshot.data!.docs[index]['title'].toString()),
-                      subtitle:
-                          Text(snapshot.data!.docs[index]['id'].toString()),
+                      title: Text(snapshot.data!.docs[index]['title'].toString()),
+                      subtitle: Text(snapshot.data!.docs[index]['id'].toString()),
                     );
                   },
                 ),
