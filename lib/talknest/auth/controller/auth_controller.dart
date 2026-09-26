@@ -31,7 +31,7 @@ class AuthController extends GetxController {
     super.onClose();
   }
 
-  Future<bool> login() async {
+  Future<bool> logins() async {
     try {
       loading.value = true;
       await _auth.signInWithEmailAndPassword(
@@ -46,7 +46,101 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<bool> signUp(String username, String email, String password) async {
+  Future<bool> login() async {
+    try {
+      loading.value = true;
+
+      final email = emailController.text.trim();
+      final password = passwordController.text.trim();
+
+      if (email.isEmpty || password.isEmpty) {
+        Get.snackbar(
+          "Error",
+          "Please enter email and password",
+          backgroundColor: AppColors.red,
+          colorText: AppColors.white,
+        );
+        return false;
+      }
+
+      await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      Get.snackbar(
+        "Success",
+        "Login successful",
+        backgroundColor: AppColors.green,
+        colorText: AppColors.white,
+      );
+
+      return true;
+    } on FirebaseAuthException catch (e) {
+      print("Firebase Login Error");
+      print("Code: ${e.code}");
+      print("Message: ${e.message}");
+
+      String message;
+
+      switch (e.code) {
+        case 'invalid-credential':
+          message = "Invalid email or password.";
+          break;
+
+        case 'user-not-found':
+          message = "No account found with this email.";
+          break;
+
+        case 'wrong-password':
+          message = "Incorrect password.";
+          break;
+
+        case 'invalid-email':
+          message = "Invalid email address.";
+          break;
+
+        case 'network-request-failed':
+          message = "Network error. Check emulator internet connection.";
+          break;
+
+        case 'too-many-requests':
+          message = "Too many attempts. Try again later.";
+          break;
+
+        case 'user-disabled':
+          message = "This account has been disabled.";
+          break;
+
+        default:
+          message = e.message ?? "Login failed.";
+      }
+
+      Get.snackbar(
+        "Login Failed",
+        message,
+        backgroundColor: AppColors.red,
+        colorText: AppColors.white,
+      );
+
+      return false;
+    } catch (e) {
+      print("Login Error: $e");
+
+      Get.snackbar(
+        "Error",
+        "Something went wrong.",
+        backgroundColor: AppColors.red,
+        colorText: AppColors.white,
+      );
+
+      return false;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  Future<bool> signUps(String username, String email, String password) async {
     try {
       loadSign.value = true;
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
@@ -87,6 +181,117 @@ class AuthController extends GetxController {
         colorText: AppColors.white,
       );
       return false;
+    }
+  }
+
+  Future<bool> signUp(
+    String username,
+    String email,
+    String password,
+  ) async {
+    try {
+      loadSign.value = true;
+
+      username = username.trim();
+      email = email.trim();
+      password = password.trim();
+
+      if (username.isEmpty || email.isEmpty || password.isEmpty) {
+        Get.snackbar(
+          "Error",
+          "Please fill all fields",
+          backgroundColor: AppColors.red,
+          colorText: AppColors.white,
+        );
+        return false;
+      }
+
+      final UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      final User? user = userCredential.user;
+
+      if (user == null) {
+        return false;
+      }
+
+      final uid = user.uid;
+
+      await _firestore.collection("Users").doc(uid).set({
+        "uid": uid,
+        "username": username,
+        "email": email,
+        "createdAt": FieldValue.serverTimestamp(),
+      });
+
+      Get.snackbar(
+        "Success",
+        "Account created successfully!",
+        backgroundColor: AppColors.green,
+        colorText: AppColors.white,
+      );
+
+      return true;
+    } on FirebaseAuthException catch (e) {
+      print("Firebase Signup Error");
+      print("Code: ${e.code}");
+      print("Message: ${e.message}");
+
+      String message;
+
+      switch (e.code) {
+        case 'email-already-in-use':
+          message = "This email is already registered.";
+          break;
+
+        case 'weak-password':
+          message = "Password is too weak.";
+          break;
+
+        case 'invalid-email':
+          message = "Invalid email address.";
+          break;
+
+        case 'network-request-failed':
+          message = "Network error. Check emulator internet.";
+          break;
+
+        case 'operation-not-allowed':
+          message = "Email/password login is disabled in Firebase.";
+          break;
+
+        case 'too-many-requests':
+          message = "Too many attempts. Try again later.";
+          break;
+
+        default:
+          message = e.message ?? "Signup failed.";
+      }
+
+      Get.snackbar(
+        "Sign Up Failed",
+        message,
+        backgroundColor: AppColors.red,
+        colorText: AppColors.white,
+        duration: const Duration(seconds: 3),
+      );
+
+      return false;
+    } catch (e) {
+      print("Signup Error: $e");
+
+      Get.snackbar(
+        "Error",
+        "Something went wrong.",
+        backgroundColor: AppColors.red,
+        colorText: AppColors.white,
+      );
+
+      return false;
+    } finally {
+      loadSign.value = false;
     }
   }
 

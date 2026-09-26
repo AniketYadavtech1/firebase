@@ -34,10 +34,8 @@ class AppColors {
   static const borderPurple = Color(0xff660785);
   static const bgPurple = Color(0xffFDF6FF);
   static const pending = Color(0x806F4280);
-
   static const orange = Color(0xffF55C47);
   static const pendingColor = Color(0xFFFFF2EE);
-
   static const lightRed = Color(0xffFFE0E0);
   static const lightPink = Color(0xffFDF6FF);
   static const yellow = Color(0xffFFC107);
